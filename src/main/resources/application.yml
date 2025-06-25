@@ -1,0 +1,11 @@
+spring:
+  devtools:
+    restart:
+      enabled: false
+  profiles:
+    active: prod # 실행환경 지정 (dev:개발, prod: 운영)
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: never

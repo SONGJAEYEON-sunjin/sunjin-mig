@@ -1,0 +1,40 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  devtools:
+    restart:
+      enabled: false
+  datasource:
+    url: jdbc:mysql://db-jqe09-kr.vpc-pub-cdb.ntruss.com:3306/kcubeon_appr1?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: kcubeon_appr1
+    password: kcubeon0302!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+#      connection-init-sql: SET FOREIGN_KEY_CHECKS = 0
+      maximum-pool-size: 30
+      minimum-idle: 10
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 180000
+      keepalive-time: 300000
+
+logging:
+  level:
+    root: INFO
+    org.springframework.jdbc.core.JdbcTemplate: INFO
+    org.springframework.jdbc.core.StatementCreatorUtils: INFO
+    org.springframework.batch.core: INFO
+    org.springframework.transaction: INFO
+
+migration:
+  tenant-id : 1090 # 운영 tenantid
+  default-userid : 20954 # 퇴사자 USERID
+  default-kmid : 27232 # 디폴트 부서 KMID
+  asis-min-documentid: 17   # select min(documentid) from dp_app_doc WHERE WRITETIMEYMD <'20250101';
+  asis-max-documentid: 1510526 # select max(documentid) from dp_app_doc WHERE WRITETIMEYMD <'20250101';
+  form-id-A: 10 # 이관용 양식ID
+  form-id-B: 11 # 이관용 양식ID 회계전표
+  ctgrId : 2 # 부서문서함 category id
+  tobe-min-itemid: 1 # select min(itemid) from ap_item ; -- 해당 이관범위조건 추가
+  tobe-max-itemid: 1150193 # select max(itemid) from ap_item ; -- 해당 이관범위조건 추가
