@@ -40,7 +40,12 @@ public class DocCirDocProcessor implements ItemProcessor<DocShareRow, MapSqlPara
             user = cache.getUserInfo(defaultUserId);
 
             param.addValue("GROUPID", userXid.makeUserXid(defaultUserId));
-            param.addValue("GROUP_NAME", item.nameBase());
+
+            if(item.nameBase() == null){
+                param.addValue("GROUP_NAME", "'{\"ko\":\"퇴사자\",\"en\":\"Retiree\",\"zh\":\"退休人员\",\"ja\":\"退社者\"}'");
+            }else{
+                param.addValue("GROUP_NAME", item.nameBase());
+            }
         }else{
             param.addValue("GROUPID", userXid.makeUserXid(user.userId()));
             param.addValue("GROUP_NAME", user.name());

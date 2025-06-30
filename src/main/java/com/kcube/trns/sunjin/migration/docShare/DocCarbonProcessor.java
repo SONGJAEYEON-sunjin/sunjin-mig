@@ -1,16 +1,13 @@
 package com.kcube.trns.sunjin.migration.docShare;
 
+import com.kcube.trns.sunjin.cache.MigrationCache;
 import com.kcube.trns.sunjin.cache.apitem.DocItemKeyCache;
 import com.kcube.trns.sunjin.cache.folder.FolderInfo;
-import com.kcube.trns.sunjin.cache.MigrationCache;
 import com.kcube.trns.sunjin.cache.user.UserInfo;
 import com.kcube.trns.sunjin.common.UserXid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.SkipListener;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -53,7 +50,13 @@ public class DocCarbonProcessor implements ItemProcessor<DocShareRow, MapSqlPara
         param.addValue("ITEMID", itemId == null ? item.documentId() : itemId);
 
         param.addValue("GROUPID", groupId);
-        param.addValue("GROUP_NAME", groupName);
+
+        if(groupName == null){
+            param.addValue("GROUP_NAME", "'{\"ko\":\"퇴사자\",\"en\":\"Retiree\",\"zh\":\"退休人员\",\"ja\":\"退社者\"}'");
+        }else{
+            param.addValue("GROUP_NAME", groupName);
+        }
+
         param.addValue("TYPE", "REFERENCED");
         param.addValue("RGST_DATE", item.shareDate());
 
@@ -106,21 +109,6 @@ public class DocCarbonProcessor implements ItemProcessor<DocShareRow, MapSqlPara
             @Override
             public void onSkipInWrite(Object item, Throwable t) {
                 log.warn(">> Skipped in WRITE: {}, reason: {}", item, t.getMessage());
-            }
-        };
-    }
-
-    @Bean
-    public StepExecutionListener stepStatsLogger() {
-        return new StepExecutionListener() {
-            @Override
-            public ExitStatus afterStep(StepExecution stepExecution) {
-                log.info("=== Step Stats ===");
-                log.info("Read Count     : {}", stepExecution.getReadCount());
-                log.info("Filter Count   : {}", stepExecution.getFilterCount()); // processor에서 null 리턴된 수
-                log.info("Write Count    : {}", stepExecution.getWriteCount());
-                log.info("Skip Count     : {}", stepExecution.getSkipCount());   // exception으로 skip된 수
-                return stepExecution.getExitStatus();
             }
         };
     }

@@ -50,7 +50,13 @@ public class DocRcvrProcessor implements ItemProcessor<DocRcvrRow, MapSqlParamet
         if(user == null || user.userId() == null){
             user = cache.getUserInfo(defaultUserId);
             params.addValue("GROUPID", userXid.makeUserXid(user.userId()));
-            params.addValue("GROUP_NAME", item.nameBase());
+
+            if(item.nameBase() == null){
+                params.addValue("GROUP_NAME", "'{\"ko\":\"퇴사자\",\"en\":\"Retiree\",\"zh\":\"退休人员\",\"ja\":\"退社者\"}'");
+            }else{
+                params.addValue("GROUP_NAME", item.nameBase());
+            }
+
         }else{
             params.addValue("GROUPID", userXid.makeUserXid(user.userId()));
             params.addValue("GROUP_NAME", user.userDisp());

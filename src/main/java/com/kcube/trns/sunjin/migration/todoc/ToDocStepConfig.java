@@ -71,10 +71,10 @@ public class ToDocStepConfig {
                     """, start, end);
 
                         totalUpdated += updated;
-                        log.info("🔄 Updated [{} ~ {}] → {} rows", start, end, updated);
+                        log.info("Updated [{} ~ {}] → {} rows", start, end, updated);
                     }
 
-                    log.info("✅ Total updated rows: " + totalUpdated);
+                    log.info("Total updated rows: " + totalUpdated);
                     return RepeatStatus.FINISHED;
                 }, transactionManager)
                 .build();
