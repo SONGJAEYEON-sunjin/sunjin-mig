@@ -4,6 +4,8 @@ import com.kcube.trns.sunjin.cache.docdetail.DocDetail;
 import com.kcube.trns.sunjin.cache.docdetail.DocDetailRowMapper;
 import com.kcube.trns.sunjin.cache.folder.FolderInfo;
 import com.kcube.trns.sunjin.cache.folder.FolderRowMapper;
+import com.kcube.trns.sunjin.cache.orguser.OrgUserInfo;
+import com.kcube.trns.sunjin.cache.orguser.OrgUserInfoRowMapper;
 import com.kcube.trns.sunjin.cache.user.UserInfo;
 import com.kcube.trns.sunjin.cache.user.UserRowMapper;
 import lombok.RequiredArgsConstructor;
@@ -81,21 +83,19 @@ public class CacheInitTasklet implements Tasklet {
 
         log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> grpidCache size : {} ", grpidQueryCnt);
 
-        // orgUserInfo cache 초기화 (미사용캐시)
-//        String orgUserInfoQuery = """
-//                select ud.userid ,ud.deptid ,d.namebase
-//                from dp_acc_userdept ud join dp_acc_dept d
-//                on ud.deptid = d.deptid
-//                where userdeptorder = 1
-//        """;
-//
-//        List<OrgUserInfo> orgUserInfoList = jdbcTemplate.query(orgUserInfoQuery, new OrgUserInfoRowMapper());
-//
-//        for(OrgUserInfo orgUserInfo : orgUserInfoList){
-//            cache.putOrgUserCache(orgUserInfo.userId(), orgUserInfo);
-//        }
-//
-//        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> orgUserInfo size : {} ", orgUserInfoList.size());
+        // orgUserInfo cache 초기화
+        String orgUserInfoQuery = """
+                select userid, namebase
+                from dp_acc_user;
+        """;
+
+        List<OrgUserInfo> orgUserInfoList = jdbcTemplate.query(orgUserInfoQuery, new OrgUserInfoRowMapper());
+
+        for(OrgUserInfo orgUserInfo : orgUserInfoList){
+            cache.putOrgUserCache(orgUserInfo.userId(), orgUserInfo);
+        }
+
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> orgUserInfo size : {} ", orgUserInfoList.size());
 
         return RepeatStatus.FINISHED;
     }

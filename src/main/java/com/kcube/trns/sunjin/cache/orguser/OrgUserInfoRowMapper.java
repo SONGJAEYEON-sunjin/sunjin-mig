@@ -10,7 +10,6 @@ public class OrgUserInfoRowMapper implements RowMapper<OrgUserInfo> {
     public OrgUserInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new OrgUserInfo(
                 rs.getLong("userid"),
-                rs.getLong("deptid"),
                 rs.getString("namebase")
         );
     }

@@ -23,10 +23,8 @@ public class OrgUserCacheTasklet implements Tasklet {
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         // orgUserInfo cache 초기화
         String orgUserInfoQuery = """
-                select ud.userid ,ud.deptid ,d.namebase
-                from dp_acc_userdept ud join dp_acc_dept d
-                on ud.deptid = d.deptid
-                where userdeptorder = 1
+                select userid, namebase
+                from dp_acc_user;
         """;
 
         List<OrgUserInfo> orgUserInfoList = jdbcTemplate.query(orgUserInfoQuery, new OrgUserInfoRowMapper());

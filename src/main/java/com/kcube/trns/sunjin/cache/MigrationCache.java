@@ -2,6 +2,7 @@ package com.kcube.trns.sunjin.cache;
 
 import com.kcube.trns.sunjin.cache.docdetail.DocDetail;
 import com.kcube.trns.sunjin.cache.folder.FolderInfo;
+import com.kcube.trns.sunjin.cache.orguser.OrgUserInfo;
 import com.kcube.trns.sunjin.cache.user.UserInfo;
 import org.springframework.stereotype.Component;
 
@@ -72,14 +73,14 @@ public class MigrationCache {
         return grpIdCacheByTrnsKey.get(key);
     }
 
-    // orgUserCache -> tobe에 부서정보가 없을 경우에 값을 참조하기위한 cache -> 사용하지 않기로함
-//    private final Map<Long, OrgUserInfo> orgUserCacheByUserId = new ConcurrentHashMap<Long, OrgUserInfo>();
-//
-//    public void putOrgUserCache(long userId, OrgUserInfo orgUserInfo) {
-//        orgUserCacheByUserId.put(userId, orgUserInfo);
-//    }
-//
-//    public OrgUserInfo getOrgUserCache(long userId) {
-//        return orgUserCacheByUserId.get(userId);
-//    }
+    // orgUserCache
+    private final Map<Long, OrgUserInfo> orgUserCacheByUserId = new ConcurrentHashMap<Long, OrgUserInfo>();
+
+    public void putOrgUserCache(long userId, OrgUserInfo orgUserInfo) {
+        orgUserCacheByUserId.put(userId, orgUserInfo);
+    }
+
+    public OrgUserInfo getOrgUserCache(long userId) {
+        return orgUserCacheByUserId.get(userId);
+    }
 }
