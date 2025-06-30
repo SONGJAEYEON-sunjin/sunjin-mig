@@ -57,8 +57,16 @@ public class DocLineProcessor implements ItemProcessor<DocLineRow, MapSqlParamet
 
             user = cache.getUserInfo(defaultUserId);
                 params.addValue("USERID", user.userId());
-                params.addValue("USER_NAME", item.nameBase());
-                params.addValue("USER_DISP", item.nameBase());
+
+                if(item.nameBase() == null){
+                    params.addValue("USERID", user.userId());
+                    params.addValue("USER_NAME", "'{\"ko\":\"퇴사자\",\"en\":\"Retiree\",\"zh\":\"退休人员\",\"ja\":\"退社者\"}'");
+                    params.addValue("USER_DISP", "'{\"ko\":\"퇴사자\",\"en\":\"Retiree\",\"zh\":\"退休人员\",\"ja\":\"退社者\"}'");
+                }else{
+                    params.addValue("USERID", user.userId());
+                    params.addValue("USER_NAME", item.nameBase());
+                    params.addValue("USER_DISP", item.nameBase());
+                }
                 params.addValue("DPRTID", defaultKmid);
                 params.addValue("DPRT_NAME", "선진");
                 params.addValue("PSTNID", user.pstnId());

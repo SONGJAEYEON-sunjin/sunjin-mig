@@ -38,7 +38,13 @@ public class DocForwardProcessor implements ItemProcessor<DocShareRow, MapSqlPar
 
         if(user == null || user.userId() == null) {
             user = cache.getUserInfo(defaultUserId);
-            param.addValue("GROUP_NAME", item.nameBase());
+
+            if(item.nameBase() == null){
+                param.addValue("GROUP_NAME", "'{\"ko\":\"퇴사자\",\"en\":\"Retiree\",\"zh\":\"退休人员\",\"ja\":\"退社者\"}'");
+            }else{
+                param.addValue("GROUP_NAME", item.nameBase());
+            }
+
             param.addValue("GROUPID", userXid.makeUserXid(user.userId()));
         }else{
             param.addValue("GROUP_NAME", user.name());

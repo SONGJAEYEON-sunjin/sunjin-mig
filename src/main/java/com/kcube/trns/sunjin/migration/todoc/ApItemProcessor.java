@@ -58,8 +58,7 @@ public class ApItemProcessor implements ItemProcessor<ApItem, MapSqlParameterSou
         } catch (Exception e) {
         log.error("Error processing itemid: {}", item.itemid(), e);
         throw e;
-    }
-
+        }
     }
 }
 

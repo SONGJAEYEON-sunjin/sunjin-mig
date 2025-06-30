@@ -79,10 +79,15 @@ public class DocOpnProcessor implements ItemProcessor<DocOpnRow, MapSqlParameter
         if(user == null || user.userId() == null) {
             user = cache.getUserInfo(defaultUserId);
 
-            param.addValue("USERID", user.userId());
-            param.addValue("USER_NAME", item.nameBase());
-            param.addValue("USER_DISP", item.nameBase());
-
+            if(item.nameBase() == null){
+                param.addValue("USERID", user.userId());
+                param.addValue("USER_NAME", "'{\"ko\":\"퇴사자\",\"en\":\"Retiree\",\"zh\":\"退休人员\",\"ja\":\"退社者\"}'");
+                param.addValue("USER_DISP", "'{\"ko\":\"퇴사자\",\"en\":\"Retiree\",\"zh\":\"退休人员\",\"ja\":\"退社者\"}'");
+            }else{
+                param.addValue("USERID", user.userId());
+                param.addValue("USER_NAME", item.nameBase());
+                param.addValue("USER_DISP", item.nameBase());
+            }
         }else{
             param.addValue("USERID", user.userId());
             param.addValue("USER_NAME", user.name());

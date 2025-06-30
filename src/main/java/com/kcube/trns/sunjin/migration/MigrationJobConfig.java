@@ -55,7 +55,8 @@ public class MigrationJobConfig {
                                     Step docCarbonStep,
                                     Step docScrtStep,
                                     Step docSrchStep,
-                                    Step docLineStep) {
+                                    Step docLineStep,
+                                    Step disableFkStep, Step enableFkStep) {
         return new JobBuilder("parallelMigrationJob", jobRepository)
 
 //                // --- [[ AP_ITEM 이관 ]]
@@ -75,8 +76,8 @@ public class MigrationJobConfig {
 ////                // AP_ITEM
 ////                .start(docMigrationStep) // DocReader.docRowReader 에서 범위 설정 후 실행
 ////               .next(updateOrgIdByQueryStep)
-////                .next(apItemCacheStep)
-////
+//                .start(apItemCacheStep)
+//
 ////                // AP_ITEM_SCRT
 ////                .start(docScrtStep) // DocScrtReader.docScrtPagingReader 에서 범위 설정 후 실행
 ////
@@ -84,12 +85,16 @@ public class MigrationJobConfig {
 ////                .start(docSrchStep) // DocSrchReader.docSrchPagingReader 에서 범위 설정 후 실행
 ////
 ////               // AP_ITEM_LINE
-////                .start(docLineStep) // DocLineReader.docLineReader 에서 범위 설정 후 실행
+////               .start(disableFkStep)
+////               .next(docLineStep) // DocLineReader.docLineReader 에서 범위 설정 후 실행
+////
 ////
 ////                // AP_ITEM_OPN
-////                .start(docOpnStep)            // DocOpnReader.docOpnReader 에서 범위 설정 후 실행
-////               .next(updateOpnGidStep)
+              .start(disableFkStep)
+              .next(docOpnStep)            // DocOpnReader.docOpnReader 에서 범위 설정 후 실행
+////                .next(updateOpnGidStep)
 ////                .next(updateOpnSortStep)
+////                .next(enableFkStep)
 ////
 ////                // AP_ITEM_SHARE
 ////                .start(docCirDocStep)       // DocShareReader.docCarbonReader 에서 범위 설정 후 실행
@@ -100,9 +105,9 @@ public class MigrationJobConfig {
 ////                .start(docRcrvStep)     // DocRcvrReader.docRcvrReader 에서 범위 설정 후 실행
 ////
 ////                // AP_ITEM TO DOC_ITEM
-                .start(toDocItemStep) // DocReader.apItemReader 에서 범위 설정 후 실행
-                .start(toDocUpdateOrgIdByQueryStep)
-                .next(docItemCacheStep)
+////                 .start(toDocItemStep) // DocReader.apItemReader 에서 범위 설정 후 실행
+////                 .start(toDocUpdateOrgIdByQueryStep)
+////                .start(docItemCacheStep)
                 .build();
     }
 

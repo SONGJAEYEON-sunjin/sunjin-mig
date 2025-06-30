@@ -83,7 +83,7 @@ public class DocReader {
                    userid, 
                    parentdocumentid, 
                    accesstitleid, 
-                   CONCAT(IFNULL(CONCAT('[', docnumber, ']'), ''), subject) AS title,
+                   subject AS title,
                    namebase,
                    contenthtml, 
                    writetime, 

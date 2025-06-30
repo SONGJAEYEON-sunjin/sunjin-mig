@@ -45,7 +45,7 @@ public class DocProcessor implements ItemProcessor<DocRow, MapSqlParameterSource
 
         DocDetail docDetail = cache.getDocDetail(item.documentId());
 
-        if(item.documentId() % 10000 == 0){
+        if(item.documentId() % 1000 == 0){
             log.info(">>>>>>>>>>>>>>>>> item.documentid : {} ",item.documentId());
         }
 
@@ -73,8 +73,17 @@ public class DocProcessor implements ItemProcessor<DocRow, MapSqlParameterSource
         if(user == null || user.userId() == null) {
             user = cache.getUserInfo(defaultUserId);
                 params.addValue("USERID", user.userId());
-                params.addValue("USER_NAME", item.nameBase());
-                params.addValue("USER_DISP",  item.nameBase());
+
+                if(item.nameBase() == null){
+                    params.addValue("USERID", user.userId());
+                    params.addValue("USER_NAME", "'{\"ko\":\"퇴사자\",\"en\":\"Retiree\",\"zh\":\"退休人员\",\"ja\":\"退社者\"}'");
+                    params.addValue("USER_DISP", "'{\"ko\":\"퇴사자\",\"en\":\"Retiree\",\"zh\":\"退休人员\",\"ja\":\"退社者\"}'");
+                }else{
+                    params.addValue("USERID", user.userId());
+                    params.addValue("USER_NAME", item.nameBase());
+                    params.addValue("USER_DISP", item.nameBase());
+                }
+
                 params.addValue("DPRTID", defaultKmid);
                 params.addValue("DPRT_NAME", "선진");
                 params.addValue("CTGR_DPRTID", defaultKmid);
@@ -95,7 +104,6 @@ public class DocProcessor implements ItemProcessor<DocRow, MapSqlParameterSource
         params.addValue("COMP_DATE", item.completeDate());
 
         String title = StringEscapeUtils.unescapeHtml4(item.subject());
-        log.info(">>>>>>>>>>>>>>>>> item.documentId(): {}, item.subject(): {} , title : {} ",item.documentId(),item.subject(),title);
         params.addValue("TITLE", title);
 
         params.addValue("STATUS", "END");
