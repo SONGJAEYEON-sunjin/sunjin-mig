@@ -60,12 +60,13 @@ public class MigrationJobConfig {
         return new JobBuilder("parallelMigrationJob", jobRepository)
 
 //                // --- [[ AP_ITEM 이관 ]]
-//                .start(docPartitionedStep)
-//                .next(updateOrgIdByQueryStep)
+                .start(docMigrationStep)
+                .next(updateOrgIdByQueryStep)
 //
 //                // --- [[ AP_ITEM_XXX 이관 ]]
-//                .start(apItemCacheStep)
-//                .next(parallelDocFlowStep)
+                .start(apItemCacheStep)
+                .next(disableFkStep)
+                .next(parallelDocFlowStep)
 
                 /**
                  * doc_item_XXX 는 이관프로그램이 아닌 스크립트로 직접 실행(속도이슈)
@@ -90,8 +91,8 @@ public class MigrationJobConfig {
 ////
 ////
 ////                // AP_ITEM_OPN
-              .start(disableFkStep)
-              .next(docOpnStep)            // DocOpnReader.docOpnReader 에서 범위 설정 후 실행
+//              .start(disableFkStep)
+//              .next(docOpnStep)            // DocOpnReader.docOpnReader 에서 범위 설정 후 실행
 ////                .next(updateOpnGidStep)
 ////                .next(updateOpnSortStep)
 ////                .next(enableFkStep)
@@ -145,17 +146,19 @@ public class MigrationJobConfig {
                         new FlowBuilder<SimpleFlow>("scrtFlow").start(docScrtPartitionStep).build(),
                         new FlowBuilder<SimpleFlow>("srchFlow").start(docSrchPartitionStep).build(),
                         new FlowBuilder<SimpleFlow>("lineFlow").start(docLinePartitionStep).build(),
+                        new FlowBuilder<SimpleFlow>("fileFlow").start(docFileStep).build(),
+                        new FlowBuilder<SimpleFlow>("rcvrFlow").start(docRcrvStep).build(),
                         new FlowBuilder<SimpleFlow>("shareFlow")
                                 .start(docCirDocStep)
                                 .next(docForwardStep)
                                 .next(docCarbonPartitionStep)
                                 .build(),
-                        new FlowBuilder<SimpleFlow>("toDocFlow")
+                        new FlowBuilder<SimpleFlow>("toDocFlowRfrn")
                                 .start(toDocItemStep)
                                 .next(toDocUpdateOrgIdByQueryStep)
                                 .next(docItemCacheStep)
-                                .build(),
-                        new FlowBuilder<SimpleFlow>("rcvrFlow").start(docRcrvStep).build()
+                                .next(docRfrnStep)
+                                .build()
                 )
                 .build();
     }
