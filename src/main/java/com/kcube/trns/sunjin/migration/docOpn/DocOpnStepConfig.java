@@ -8,6 +8,7 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,6 +21,18 @@ import javax.sql.DataSource;
 @RequiredArgsConstructor
 @Slf4j
 public class DocOpnStepConfig {
+
+    @Value("${migration.asis-min-documentid}")
+    private Long asisMinDocumentid;
+
+    @Value("${migration.asis-max-documentid}")
+    private Long asisMaxDocumentid;
+
+    @Value("${migration.tobe-min-itemid}")
+    private Long tobeMinItemid;
+
+    @Value("${migration.tobe-max-itemid}")
+    private Long tobeMaxItemid;
 
     @Bean
     public Step docOpnStep(JobRepository jobRepository,
@@ -47,8 +60,9 @@ public class DocOpnStepConfig {
                         UPDATE ap_item_opn o
                         JOIN ap_item i ON o.itemid = i.trns_key
                         SET o.itemid = i.itemid
-                        WHERE i.trns_src = 'TRNS_SUNJIN_APPR';
-                """);
+                        WHERE i.trns_src = 'TRNS_SUNJIN_APPR'
+                        and itemid between ? and ? ;
+                """,tobeMinItemid,tobeMaxItemid);
                     log.info("✅ updated rows: " + updatedCount);
                     return RepeatStatus.FINISHED;
                 }, transactionManager)
@@ -85,20 +99,21 @@ public class DocOpnStepConfig {
                     jdbcTemplate.execute("SET @sort := 0");
 
                     int updatedCount = jdbcTemplate.update("""
-                    UPDATE ap_item_opn o
-                    JOIN (
-                        SELECT 
-                            opnid,
-                            itemid,
-                            (@sort := IF(@prev_itemid = itemid, @sort + 1, 0)) AS new_sort,
-                            @prev_itemid := itemid
-                        FROM ap_item_opn
-                        ORDER BY itemid, opnid
-                    ) t ON o.opnid = t.opnid
-                    SET o.sort = t.new_sort
-                """);
+                        UPDATE ap_item_opn o
+                        JOIN (
+                            SELECT 
+                                opnid,
+                                itemid,
+                                (@sort := IF(@prev_itemid = itemid, @sort + 1, 0)) AS new_sort,
+                                @prev_itemid := itemid
+                            FROM (SELECT * FROM ap_item_opn WHERE itemid BETWEEN ? AND ? ORDER BY itemid, opnid) AS sorted_opn,
+                                 (SELECT @sort := 0, @prev_itemid := NULL) vars
+                        ) t ON o.opnid = t.opnid
+                        SET o.sort = t.new_sort
+                        WHERE o.itemid BETWEEN ? AND ?;
+                    """, tobeMinItemid, tobeMaxItemid, tobeMinItemid, tobeMaxItemid);
 
-                    log.info(" updated rows: {}", updatedCount);
+                    log.info("updated rows: {}", updatedCount);
                     return RepeatStatus.FINISHED;
                 }, transactionManager)
                 .build();
