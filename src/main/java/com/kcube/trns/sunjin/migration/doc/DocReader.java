@@ -34,7 +34,7 @@ public class DocReader {
                    userid,
                    parentdocumentid,
                    accesstitleid,
-                   CONCAT(IFNULL(CONCAT('[', docnumber, ']'), ''), subject) AS title,
+                   subject AS title,
                    namebase,
                    contenthtml,
                    writetime,
@@ -44,8 +44,7 @@ public class DocReader {
         """);
         provider.setFromClause("FROM dp_app_doc");
         provider.setWhereClause("""
-              where documentid BETWEEN ${minId} and ${maxId}
-              AND approvalState = 'C'
+              where approvalState = 'C'
                         """);
         provider.setSortKeys(Map.of("documentid", Order.ASCENDING));
 
