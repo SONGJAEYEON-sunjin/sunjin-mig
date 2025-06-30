@@ -32,7 +32,7 @@ migration:
   default-userid : 20954 # 퇴사자 USERID
   default-kmid : 27232 # 디폴트 부서 KMID
   asis-min-documentid: 17   # select min(documentid) from dp_app_doc WHERE WRITETIMEYMD <'20250101';
-  asis-max-documentid: 1510526 # select max(documentid) from dp_app_doc WHERE WRITETIMEYMD <'20250101';
+  asis-max-documentid: 1510526 # select max(documentid)+1 from dp_app_doc WHERE WRITETIMEYMD <'20250101';
   form-id-A: 10 # 이관용 양식ID
   form-id-B: 11 # 이관용 양식ID 회계전표
   ctgrId : 2 # 부서문서함 category id
