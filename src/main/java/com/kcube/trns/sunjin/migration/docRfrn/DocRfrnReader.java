@@ -27,11 +27,15 @@ public class DocRfrnReader {
             CONCAT(IFNULL(CONCAT('[', d.docnumber, ']'), ''), d.subject) AS title
         """);
         queryProvider.setFromClause("""
-            FROM dp_app_basedoc bd JOIN dp_app_doc d
-            ON bd.ParentDocumentID  = d.documentid
+                FROM dp_app_basedoc bd
+                JOIN dp_app_doc d
+                ON bd.parentdocumentid = d.documentid
+                join dp_app_doc d2
+                on bd.documentid = d2.documentid
         """);
         queryProvider.setWhereClause("""
             where d.approvalstate = 'C'
+            and d2.ApprovalState ='C'
         """);
         queryProvider.setSortKeys(Map.of(
                 "bd.BaseDocumentID", Order.ASCENDING
