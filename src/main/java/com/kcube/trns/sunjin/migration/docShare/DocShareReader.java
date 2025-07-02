@@ -169,7 +169,6 @@ public class DocShareReader {
         """);
         provider.setWhereClause("""
             where d.approvalState = 'C' 
-            AND ccu.documentid BETWEEN :minId AND :maxId
         """);
         provider.setSortKeys(Map.of(
                 "ccu.DocumentID", Order.ASCENDING,
