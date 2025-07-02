@@ -56,59 +56,48 @@ public class MigrationJobConfig {
                                     Step docScrtStep,
                                     Step docSrchStep,
                                     Step docLineStep,
-                                    Step disableFkStep, Step enableFkStep) {
+                                    Step disableFkStep, Step enableFkStep, Step docFileStep, Step docRfrnStep) {
         return new JobBuilder("parallelMigrationJob", jobRepository)
 
-//                // --- [[ AP_ITEM 이관 ]]
-                .start(docMigrationStep)
+                 // AP_ITEM
+                .start(disableFkStep)
+                .next(docMigrationStep)
                 .next(updateOrgIdByQueryStep)
-//
-//                // --- [[ AP_ITEM_XXX 이관 ]]
-                .start(apItemCacheStep)
-                .next(disableFkStep)
-                .next(parallelDocFlowStep)
+                .next(apItemCacheStep)
 
-                /**
-                 * doc_item_XXX 는 이관프로그램이 아닌 스크립트로 직접 실행(속도이슈)
-                 * 스크립트 위치 : /docs/작업템플릿(doc).sql
-                 */
-                // --- [[  실패복구 STEP  ]] -> 실패한 STEP만 선택적으로 주석해제 후 실행
+                // AP_ITEM_SCRT
+                .next(docScrtStep)
 
-////                // AP_ITEM
-////                .start(docMigrationStep) // DocReader.docRowReader 에서 범위 설정 후 실행
-////               .next(updateOrgIdByQueryStep)
-//                .start(apItemCacheStep)
-//
-////                // AP_ITEM_SCRT
-////                .start(docScrtStep) // DocScrtReader.docScrtPagingReader 에서 범위 설정 후 실행
-////
-////                // AP_ITEM_SRCH
-////                .start(docSrchStep) // DocSrchReader.docSrchPagingReader 에서 범위 설정 후 실행
-////
-////               // AP_ITEM_LINE
-////               .start(disableFkStep)
-////               .next(docLineStep) // DocLineReader.docLineReader 에서 범위 설정 후 실행
-////
-////
-////                // AP_ITEM_OPN
-//              .start(disableFkStep)
-//              .next(docOpnStep)            // DocOpnReader.docOpnReader 에서 범위 설정 후 실행
-////                .next(updateOpnGidStep)
-////                .next(updateOpnSortStep)
-////                .next(enableFkStep)
-////
-////                // AP_ITEM_SHARE
-////                .start(docCirDocStep)       // DocShareReader.docCarbonReader 에서 범위 설정 후 실행
-////                .next(docForwardStep)       // DocShareReader.docForwardReader 에서 범위 설정 후 실행
-////                .next(docCarbonStep)        // DocShareReader.docCarbonReader 에서 범위 설정 후 실행
-////
-////                // AP_ITEM_RCVR
-////                .start(docRcrvStep)     // DocRcvrReader.docRcvrReader 에서 범위 설정 후 실행
-////
-////                // AP_ITEM TO DOC_ITEM
-////                 .start(toDocItemStep) // DocReader.apItemReader 에서 범위 설정 후 실행
-////                 .start(toDocUpdateOrgIdByQueryStep)
-////                .start(docItemCacheStep)
+                // AP_ITEM_SRCH
+                .next(docSrchStep)
+
+               // AP_ITEM_LINE
+               .next(docLineStep)
+
+                // AP_ITEM_OPN
+               .next(docOpnStep)
+               .next(updateOpnGidStep)
+               .next(updateOpnSortStep)
+
+                // AP_ITEM_SHARE
+                .next(docCirDocStep)
+                .next(docForwardStep)
+                .next(docCarbonStep)
+
+                // AP_ITEM_RCVR
+                .next(docRcrvStep)
+
+                // AP_ITEM TO DOC_ITEM
+                .next(toDocItemStep)
+                .next(toDocUpdateOrgIdByQueryStep)
+                .next(docItemCacheStep)
+
+                // AP_ITEM_RFRN
+                .next(docRfrnStep)
+
+                // AP_ITEM_FILE
+                .next(docFileStep)
+
                 .build();
     }
 
