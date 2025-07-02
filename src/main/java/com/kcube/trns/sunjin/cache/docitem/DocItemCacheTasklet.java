@@ -22,13 +22,13 @@ public class DocItemCacheTasklet implements Tasklet {
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        String apItemQuery = "select trns_key, itemid from doc_item where trns_src  = 'TRNS_SUNJIN_APPR' ";
+        String apItemQuery = "select apprid, itemid from doc_item where trns_src  = 'TRNS_SUNJIN_APPR' ";
 
         AtomicInteger cnt = new AtomicInteger();
 
         jdbcTemplate.query(apItemQuery, rs -> {
             cnt.getAndIncrement();
-            String trnsKey = rs.getString("trns_key");
+            String trnsKey = rs.getString("apprid"); // 변경!
             Long itemId = rs.getLong("itemId");
             cache.putApToDocCache(trnsKey, itemId);
         });
