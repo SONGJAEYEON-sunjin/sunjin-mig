@@ -67,7 +67,7 @@ public class ToDocStepConfig {
                             SET target.orgid = source.itemid
                             WHERE target.trns_src = 'TRNS_SUNJIN_APPR'
                               AND target.orgid IS NOT NULL
-                            and target.itemid BETWEEN ? AND ?
+                            and target.apprid BETWEEN ? AND ?
                     """, start, end);
 
                         totalUpdated += updated;
