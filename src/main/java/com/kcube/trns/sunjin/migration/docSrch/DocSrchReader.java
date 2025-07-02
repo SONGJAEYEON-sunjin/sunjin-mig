@@ -16,6 +16,12 @@ import java.util.Map;
 @Configuration
 public class DocSrchReader {
 
+    @Value("${migration.tobe-min-itemid}")
+    private Long tobeMinItemid;
+
+    @Value("${migration.tobe-max-itemid}")
+    private Long tobeMaxItemid;
+
     @Bean("docSrchPartitionReader")
     @StepScope
     public JdbcPagingItemReader<DocSrchDto> docSrchPartitionReader(
@@ -57,7 +63,7 @@ public class DocSrchReader {
         MySqlPagingQueryProvider provider = new MySqlPagingQueryProvider();
         provider.setSelectClause("itemid, web_html");
         provider.setFromClause("FROM ap_item");
-        provider.setWhereClause("WHERE trns_src = 'TRNS_SUNJIN_APPR' and itemid BETWEEN ${minId} and ${maxId}");
+        provider.setWhereClause("WHERE trns_src = 'TRNS_SUNJIN_APPR' and itemid BETWEEN :minId and :maxId ");
         Map<String, Order> sortKeys = new HashMap<>();
         sortKeys.put("itemid", Order.ASCENDING);
         provider.setSortKeys(sortKeys);
@@ -72,8 +78,10 @@ public class DocSrchReader {
                                 rs.getLong("itemid"),
                                 rs.getString("web_html")
                         )
-                )
-                .build();
+                ).parameterValues(Map.of(
+                        "minId", tobeMinItemid,
+                        "maxId", tobeMaxItemid
+                )).build();
     }
 
     public record DocSrchDto(

@@ -19,6 +19,13 @@ import java.util.Map;
 @Slf4j
 public class DocScrtReader {
 
+    @Value("${migration.tobe-min-itemid}")
+    private Long tobeMinItemid;
+
+    @Value("${migration.tobe-max-itemid}")
+    private Long tobeMaxItemid;
+
+
     @Bean("docScrtPagingReader")
     @StepScope
     public JdbcPagingItemReader<ApItem> docScrtPagingReader(
@@ -27,7 +34,7 @@ public class DocScrtReader {
         MySqlPagingQueryProvider provider = new MySqlPagingQueryProvider();
         provider.setSelectClause("ITEMID, DPRTID, DPRT_NAME");
         provider.setFromClause("FROM ap_item");
-        provider.setWhereClause("WHERE trns_src = 'TRNS_SUNJIN_APPR' and itemid BETWEEN ${minId} AND ${maxId}");
+        provider.setWhereClause("WHERE trns_src = 'TRNS_SUNJIN_APPR' and itemid BETWEEN :minId and :maxId ");
         provider.setSortKeys(Map.of("ITEMID", Order.ASCENDING));
 
         return new JdbcPagingItemReaderBuilder<ApItem>()
@@ -39,8 +46,10 @@ public class DocScrtReader {
                         rs.getLong("ITEMID"),
                         rs.getLong("DPRTID"),
                         rs.getString("DPRT_NAME")
-                ))
-                .build();
+                )).parameterValues(Map.of(
+                "minId", tobeMinItemid,
+                "maxId", tobeMaxItemid
+                )).build();
     }
 
     @Bean("docScrtPagingPartitionReader")

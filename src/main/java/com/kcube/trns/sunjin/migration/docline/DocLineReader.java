@@ -24,6 +24,12 @@ public class DocLineReader {
 
     private final DataSource dataSource;
 
+    @Value("${migration.tobe-min-itemid}")
+    private Long tobeMinItemid;
+
+    @Value("${migration.tobe-max-itemid}")
+    private Long tobeMaxItemid;
+
     @Bean("docLinePartitionReader")
     @StepScope
     public JdbcPagingItemReader<DocLineRow> docLinePartitionReader(
@@ -142,8 +148,7 @@ public class DocLineReader {
             """);
         provider.setWhereClause("""
                 where ai.TRNS_SRC = 'TRNS_SUNJIN_APPR' 
-                  and seq.sequence > 1 
-                  AND seq.documentid BETWEEN ${minId} and ${maxId}
+                  and seq.sequence > 1
             """);
 
         Map<String, Order> sort = new HashMap<>();
@@ -169,8 +174,7 @@ public class DocLineReader {
                         rs.getString("Proxy"),
                         rs.getInt("ProxyUserID"),
                         rs.getString("proxyNameBase")
-                ))
-                .build();
+                )).build();
     }
 
     private LocalDateTime toLocalDateTimeSafe(Timestamp timestamp) {

@@ -23,6 +23,12 @@ public class DocReader {
 
     private final DataSource dataSource;
 
+    @Value("${migration.tobe-min-itemid}")
+    private Long tobeMinItemid;
+
+    @Value("${migration.tobe-max-itemid}")
+    private Long tobeMaxItemid;
+
 
     @Bean("docRowReader")
     @StepScope
@@ -168,8 +174,15 @@ public class DocReader {
         MySqlPagingQueryProvider queryProvider = new MySqlPagingQueryProvider();
         queryProvider.setSelectClause("SELECT *");
         queryProvider.setFromClause("FROM ap_item");
-        queryProvider.setWhereClause("where trns_key is not null ");
+        queryProvider.setWhereClause("where trns_key is not null and itemid between :minId and :maxId ");
         queryProvider.setSortKeys(Map.of("ITEMID", Order.ASCENDING));
+
+
+
+        reader.setParameterValues(Map.of(
+                "minId", tobeMinItemid,
+                "maxId", tobeMaxItemid
+        ));
 
         reader.setQueryProvider(queryProvider);
 
