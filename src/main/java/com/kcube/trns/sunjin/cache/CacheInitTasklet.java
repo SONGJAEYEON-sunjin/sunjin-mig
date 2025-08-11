@@ -2,6 +2,8 @@ package com.kcube.trns.sunjin.cache;
 
 import com.kcube.trns.sunjin.cache.docdetail.DocDetail;
 import com.kcube.trns.sunjin.cache.docdetail.DocDetailRowMapper;
+import com.kcube.trns.sunjin.cache.folder.DeptCodeInfo;
+import com.kcube.trns.sunjin.cache.folder.DeptCodeRowMapper;
 import com.kcube.trns.sunjin.cache.folder.FolderInfo;
 import com.kcube.trns.sunjin.cache.folder.FolderRowMapper;
 import com.kcube.trns.sunjin.cache.orguser.OrgUserInfo;
@@ -48,6 +50,27 @@ public class CacheInitTasklet implements Tasklet {
             }
             cache.putFolderCache(folderInfo.kmId(), folderInfo);
         }
+
+        // deptCodeCache 초기화
+        String deptCodeQuery = """
+            select deptcodeid, deptid, k.kmid, k.name
+            from dp_com_deptcode dc
+            left join km k on dc.DeptID = k.trns_key
+            where k.tenantid = ? and trns_src is not null
+        """;
+
+        List<DeptCodeInfo> deptCodeList = jdbcTemplate.query(
+                deptCodeQuery,
+                new DeptCodeRowMapper(),
+                tenantId // @Value에서 가져온 tenantId 사용
+        );
+
+        for (DeptCodeInfo deptCodeInfo : deptCodeList) {
+            cache.putDeptCodeCache(deptCodeInfo.deptCodeId(), deptCodeInfo);
+        }
+
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> deptCodeCache.size : {} ", deptCodeList.size());
+
 
         // userCache 초기화
         String userQuery = "SELECT userid, name, user_disp, dprtid, dprt_name, pstnId, pstn_name, gradeid, grade_name, trns_src, trns_key FROM hr_user WHERE tenantid = ? ORDER BY userid";

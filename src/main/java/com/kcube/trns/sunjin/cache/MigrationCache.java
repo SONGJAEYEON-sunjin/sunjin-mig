@@ -1,6 +1,7 @@
 package com.kcube.trns.sunjin.cache;
 
 import com.kcube.trns.sunjin.cache.docdetail.DocDetail;
+import com.kcube.trns.sunjin.cache.folder.DeptCodeInfo;
 import com.kcube.trns.sunjin.cache.folder.FolderInfo;
 import com.kcube.trns.sunjin.cache.orguser.OrgUserInfo;
 import com.kcube.trns.sunjin.cache.user.UserInfo;
@@ -30,6 +31,18 @@ public class MigrationCache {
 
     public FolderInfo getFolderCacheByTrnsKey(String key) {
         return folderCacheByTrnsKey.get(key);
+    }
+
+    // deptcode cache
+    private final Map<Long, DeptCodeInfo> deptCodeCache = new ConcurrentHashMap<>();
+
+    public void putDeptCodeCache(Long deptCodeId, DeptCodeInfo info) {
+        deptCodeCache.put(deptCodeId, info);
+    }
+
+    // 이걸로 갖고와서 set 해주면 되겠다,,,
+    public DeptCodeInfo getDeptCode(Long deptCodeId) {
+        return deptCodeCache.get(deptCodeId);
     }
 
     // user cache
