@@ -30,8 +30,7 @@ public class DocFileProcessor implements ItemProcessor<DocFileRow, MapSqlParamet
 
         MapSqlParameterSource param = new MapSqlParameterSource();
 
-        Long itemId = itemKeyCache.getItemIdCacheByTrnsKey(String.valueOf(item.itemId()));
-        param.addValue("ITEMID", itemId == null ? item.itemId() : itemId);
+        param.addValue("ITEMID", item.itemId());
         param.addValue("FILE_NAME", item.fileName());
         param.addValue("FILE_SIZE", item.fileSize());
         param.addValue("DNLD_CNT", 0);
