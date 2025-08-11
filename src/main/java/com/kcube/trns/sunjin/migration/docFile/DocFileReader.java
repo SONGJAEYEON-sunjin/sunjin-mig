@@ -31,8 +31,8 @@ public class DocFileReader {
             da.fileOrder AS fileOrder
         """);
         provider.setFromClause("""
-            FROM dp_app_attach da
-            JOIN ap_item ai ON ai.trns_key = da.documentid
+            FROM dp_app_attach da JOIN ap_item ai 
+            ON da.documentid = ai.trns_key
         """);
         provider.setWhereClause("""
             where ai.TRNS_SRC = 'TRNS_SUNJIN_APPR' 
@@ -46,7 +46,7 @@ public class DocFileReader {
                 .name("apItemFileReader")
                 .dataSource(dataSource)
                 .queryProvider(provider)
-                .pageSize(5000)
+                .pageSize(2000)
                 .rowMapper((rs, rowNum) -> new DocFileRow(
                         rs.getLong("itemId"),
                         rs.getString("fileName"),

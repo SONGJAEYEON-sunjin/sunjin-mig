@@ -25,7 +25,7 @@ public class DocFileStepConfig {
                             JdbcBatchItemWriter<MapSqlParameterSource> docFileBatchWriter) {
 
         return new StepBuilder("docFileStep", jobRepository)
-                .<DocFileRow, MapSqlParameterSource>chunk(5000, transactionManager)
+                .<DocFileRow, MapSqlParameterSource>chunk(2000, transactionManager)
                 .reader(docFilePagingReader)
                 .processor(docFileProcessor)
                 .writer(docFileBatchWriter)
