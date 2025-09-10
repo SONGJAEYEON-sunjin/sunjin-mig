@@ -108,7 +108,7 @@ public class DocShareReader {
                ccu.UserID, 
                ccu.NameBase, 
                d.writetime, 
-               ccu.DeptId, 
+               d.deptcodeid,
                ccu.isGroup, 
                ccu.isSubTree
         """);
@@ -135,7 +135,7 @@ public class DocShareReader {
                         rs.getLong("UserID"),
                         rs.getString("NameBase"),
                         rs.getTimestamp("writetime").toLocalDateTime(),
-                        rs.getLong("DeptId"),
+                        rs.getLong("deptcodeid"),
                         rs.getString("isGroup"),
                         rs.getInt("isSubTree")
                 ))
@@ -159,7 +159,7 @@ public class DocShareReader {
                ccu.UserID, 
                ccu.NameBase, 
                d.writetime, 
-               ccu.DeptId, 
+               d.deptcodeid,
                ccu.isGroup, 
                ccu.isSubTree
         """);
@@ -173,7 +173,7 @@ public class DocShareReader {
         provider.setSortKeys(Map.of(
                 "ccu.DocumentID", Order.ASCENDING,
                 "ccu.UserID", Order.ASCENDING,
-                "ccu.deptID", Order.ASCENDING
+                "d.deptcodeid", Order.ASCENDING
         ));
 
         return new JdbcPagingItemReaderBuilder<DocShareRow>()
@@ -185,7 +185,7 @@ public class DocShareReader {
                         rs.getLong("UserID"),
                         rs.getString("NameBase"),
                         rs.getTimestamp("writetime").toLocalDateTime(),
-                        rs.getLong("DeptId"),
+                        rs.getLong("deptcodeid"),
                         rs.getString("isGroup"),
                         rs.getInt("isSubTree")
                 )).pageSize(5000)

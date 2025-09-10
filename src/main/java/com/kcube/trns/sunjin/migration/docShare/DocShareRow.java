@@ -7,7 +7,7 @@ public record DocShareRow(
         Long userId,
         String nameBase,
         LocalDateTime shareDate,
-        Long deptid,
+        Long deptCodeId,
         String isGroup,
         int isSubTree
 ) {

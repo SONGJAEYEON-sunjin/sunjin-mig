@@ -32,7 +32,7 @@ public class DocScrtReader {
             DataSource dataSource
     ) {
         MySqlPagingQueryProvider provider = new MySqlPagingQueryProvider();
-        provider.setSelectClause("ITEMID, DPRTID, DPRT_NAME");
+        provider.setSelectClause("ITEMID, CTGR_DPRTID, CTGR_DPRT_NAME");
         provider.setFromClause("FROM ap_item");
         provider.setWhereClause("WHERE trns_src = 'TRNS_SUNJIN_APPR' and itemid BETWEEN :minId and :maxId ");
         provider.setSortKeys(Map.of("ITEMID", Order.ASCENDING));
@@ -44,8 +44,8 @@ public class DocScrtReader {
                 .pageSize(5000)
                 .rowMapper((rs, rowNum) -> new ApItem(
                         rs.getLong("ITEMID"),
-                        rs.getLong("DPRTID"),
-                        rs.getString("DPRT_NAME")
+                        rs.getLong("CTGR_DPRTID"),
+                        rs.getString("CTGR_DPRT_NAME")
                 )).parameterValues(Map.of(
                 "minId", tobeMinItemid,
                 "maxId", tobeMaxItemid
@@ -60,7 +60,7 @@ public class DocScrtReader {
             @Value("#{stepExecutionContext[maxId]}") Long maxId
     ) {
         MySqlPagingQueryProvider provider = new MySqlPagingQueryProvider();
-        provider.setSelectClause("ITEMID, DPRTID, DPRT_NAME");
+        provider.setSelectClause("ITEMID, CTGR_DPRTID, CTGR_DPRT_NAME");
         provider.setFromClause("FROM ap_item");
         provider.setWhereClause("WHERE trns_src = 'TRNS_SUNJIN_APPR' and itemid BETWEEN :minId AND :maxId");
         provider.setSortKeys(Map.of("ITEMID", Order.ASCENDING));
@@ -72,8 +72,8 @@ public class DocScrtReader {
                 .pageSize(5000)
                 .rowMapper((rs, rowNum) -> new ApItem(
                         rs.getLong("ITEMID"),
-                        rs.getLong("DPRTID"),
-                        rs.getString("DPRT_NAME")
+                        rs.getLong("CTGR_DPRTID"),
+                        rs.getString("CTGR_DPRT_NAME")
                 )).parameterValues(Map.of(
                         "minId", minId,
                         "maxId", maxId

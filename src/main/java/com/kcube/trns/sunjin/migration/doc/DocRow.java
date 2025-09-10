@@ -13,6 +13,7 @@ public record DocRow (
     Timestamp completeDate,
     String contentHTML,
     String docNumber,
-    Long formId
+    Long formId,
+    Long deptCodeId
 ) {
 }

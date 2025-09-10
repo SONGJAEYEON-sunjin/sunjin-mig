@@ -29,7 +29,6 @@ public class DocReader {
     @Value("${migration.tobe-max-itemid}")
     private Long tobeMaxItemid;
 
-
     @Bean("docRowReader")
     @StepScope
     public JdbcPagingItemReader<DocRow> docRowReader(
@@ -46,7 +45,8 @@ public class DocReader {
                    writetime,
                    completedate,
                    docnumber,
-                   formId
+                   formId,
+                   deptcodeid
         """);
         provider.setFromClause("FROM dp_app_doc");
         provider.setWhereClause("""
@@ -70,7 +70,8 @@ public class DocReader {
                 rs.getTimestamp("completedate"),
                 rs.getString("contenthtml"),
                 rs.getString("docNumber"),
-                rs.getLong("formid")
+                rs.getLong("formid"),
+                rs.getLong("deptcodeid")
         ));
 
         return reader;
@@ -94,7 +95,8 @@ public class DocReader {
                    writetime, 
                    completedate, 
                    docnumber, 
-                   formId
+                   formId,
+                   deptcodeid
         """);
         provider.setFromClause("FROM dp_app_doc");
         provider.setWhereClause("""
@@ -119,7 +121,8 @@ public class DocReader {
                 rs.getTimestamp("completedate"),
                 rs.getString("contenthtml"),
                 rs.getString("docNumber"),
-                rs.getLong("formid")
+                rs.getLong("formid"),
+                rs.getLong("deptcodeid")
         ));
 
         reader.setParameterValues(Map.of(
