@@ -17,6 +17,10 @@ public class DocFileProcessor implements ItemProcessor<DocFileRow, MapSqlParamet
     @Override
     public MapSqlParameterSource process(DocFileRow item) throws Exception {
 
+        if(item.itemId() % 100 == 0 ){
+            log.info(">>>>>>>>>>>>>>>>>>>>>>>> item.itemid() : {} ",item.itemId());
+        }
+
         String cleanPath = item.filePath();
         if (cleanPath != null && cleanPath.startsWith("/")) {
             cleanPath = cleanPath.substring(1);

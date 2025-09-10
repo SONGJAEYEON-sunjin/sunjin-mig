@@ -30,7 +30,7 @@ public class DocLineProcessor implements ItemProcessor<DocLineRow, MapSqlParamet
         UserInfo user = cache.getUserInfoByTrnsKey(String.valueOf(item.userId()));
         UserInfo proxyUser = cache.getUserInfoByTrnsKey(String.valueOf(item.proxyUserId()));
 
-        if(item.documentId() % 10000 == 0){
+        if(item.documentId() % 1000 == 0){
             log.info(">>>>>>>>>>>>>>>>> item.documentid : {} ",item.documentId());
         }
 

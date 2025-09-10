@@ -14,7 +14,7 @@ public class ApItemProcessor implements ItemProcessor<ApItem, MapSqlParameterSou
     public MapSqlParameterSource process(ApItem item) {
 
         try {
-            if(item.itemid() % 10000 == 0 ){
+            if(item.itemid() % 100 == 0 ){
                 log.info(">>>>>>>>>>>>>>>>>>>>>>>> item.itemid() : {} ",item.itemid());
             }
 
