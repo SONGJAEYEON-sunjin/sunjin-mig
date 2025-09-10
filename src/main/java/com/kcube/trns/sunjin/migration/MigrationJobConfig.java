@@ -42,7 +42,6 @@ public class MigrationJobConfig {
                                     Step docMigrationStep,
                                     Step docScrtPartitionStep,
                                     Step docLinePartitionStep,
-                                    Step docOpnStep,
                                     Step updateOpnGidStep,
                                     Step updateOpnSortStep,
                                     Step docCirDocStep,
@@ -56,10 +55,15 @@ public class MigrationJobConfig {
                                     Step docScrtStep,
                                     Step docSrchStep,
                                     Step docLineStep,
-                                    Step disableFkStep, Step enableFkStep, Step docFileStep, Step docRfrnStep) {
+                                    Step disableFkStep, Step enableFkStep, Step docFileStep, Step docRfrnStep,
+                                    Step docOpnStepFirst,
+                                    Step docOpnStepSecond,
+                                    Step docOpnStepThird,
+                                    Step docOpnStepFourth,
+                                    Step docOpnStepFifth, Step docOpnStep) {
         return new JobBuilder("parallelMigrationJob", jobRepository)
 
-                 // AP_ITEM
+//                 // AP_ITEM
                 .start(disableFkStep)
                 .next(docMigrationStep)
                 .next(updateOrgIdByQueryStep)
@@ -75,9 +79,11 @@ public class MigrationJobConfig {
                .next(docLineStep)
 
                 // AP_ITEM_OPN
-               .next(docOpnStep)
-               .next(updateOpnGidStep)
-               .next(updateOpnSortStep)
+                .next(docOpnStep)
+               .next(docOpnStepThird) // 나의 의견을 자식글에도 등록
+               .next(docOpnStepFifth) // 나의 의견을 부모글에도 등록
+                .next(updateOpnGidStep)
+                .next(updateOpnSortStep)
 
                 // AP_ITEM_SHARE
                 .next(docCirDocStep)
@@ -93,11 +99,10 @@ public class MigrationJobConfig {
                 .next(docItemCacheStep)
 
                 // AP_ITEM_RFRN
-                .next(docRfrnStep)
+               .next(docRfrnStep)
 
                 // AP_ITEM_FILE
                 .next(docFileStep)
-
                 .build();
     }
 
