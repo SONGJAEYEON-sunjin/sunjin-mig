@@ -13,7 +13,8 @@
 truncate table doc_detail;
 truncate table DP_ACC_User;
 truncate table DP_ACC_UserDept;
-truncate table DP_ACC_Dept; 
+truncate table DP_ACC_Dept;
+truncate table DP_COM_DeptCode;
 truncate table DP_APP_Folder; 
 truncate table DP_APP_FolderAuth; 
 truncate table DP_APP_FolderViewAuth;
@@ -211,27 +212,45 @@ select * from DP_APP_CirDoc where DocumentID BETWEEN 1000001 AND 1510525 order b
 select * from DP_ACC_User; -- 2855 각 테이블 dump count 확인
 select * from DP_ACC_UserDept; -- 2891
 select * from DP_ACC_Dept; -- 909
+select * from DP_COM_DeptCode;
 select * from DP_APP_Folder; -- 17
 select * from DP_APP_FolderAuth;  -- 667
 select * from DP_APP_FolderViewAuth; -- 2705
-select * from DP_APP_AccessGrade;  -- 4 
-select * from DP_APP_Doc where documentid < 1510526; -- 1197974
-select * from dp_app_cirdoc where documentid < 1510526; -- 113166
-select * from DP_APP_CirBaseDoc where documentid < 1510526; -- 22497
-select * from DP_APP_CirAttachFile where documentid < 1510526; -- 130588
-select * from DP_APP_CircUser where documentid < 1510526; -- 135903
-select * from DP_APP_ForwardDoc where documentid < 1510526; -- 33814
-select * from DP_APP_ForwardUser where documentid < 1510526; -- 43529
-select * from DP_APP_CarbonCopyUser where documentid < 1510526; -- 1768911
-select * from DP_APP_CarbonCopyUserGroup where documentid < 1510526; -- 123409
-select * from DP_APP_CounterPartUser where documentid < 1510526; -- 454166
-select * from DP_APP_CounterPartUserModify  where documentid < 1510526; -- 3687
-select * from DP_APP_Attach  where documentid < 1510526; -- 971356
-select * from DP_APP_BaseDoc  where documentid < 1510526; -- 222675
-select * from DP_APP_SeqBackup  where documentid < 1510526; -- 3818270
-select * from DP_APP_SeqLater  where documentid < 1510526; -- 598
-select * from DP_APP_ShortReply  where documentid < 1510526; -- 363426
+select * from DP_APP_AccessGrade;  -- 4
 
+select * from DP_APP_Doc where documentid between 1510526 and 1525131 order by CompanyId,DocumentID;
+select * from dp_app_cirdoc where documentid between 1510526 and 1525131 order by CirculationDocumentID;
+select * from DP_APP_CirBaseDoc where documentid between 1510526 and 1525131 order by DocumentID;
+select * from DP_APP_CirAttachFile where documentid between 1510526 and 1525131 order by DocumentID;
+select * from DP_APP_CircUser where documentid between 1510526 and 1525131 order by DocumentID;
+select * from DP_APP_ForwardDoc where documentid between 1510526 and 1525131 order by DocumentID;
+select * from DP_APP_ForwardUser where documentid between 1510526 and 1525131 order by DocumentID;
+select * from DP_APP_CarbonCopyUser where documentid between 1510526 and 1525131 order by DocumentID;
+select * from DP_APP_CarbonCopyUserGroup where documentid between 1510526 and 1525131 order by DocumentID;
+select * from DP_APP_CounterPartUser where documentid between 1510526 and 1525131 order by DocumentID, UserID, DeptID, Sequence;
+select * from DP_APP_CounterPartUserModify  where documentid between 1510526 and 1525131 order by DocumentID;
+select * from DP_APP_Attach  where documentid between 1510526 and 1525131 order by DocumentID;
+select * from DP_APP_BaseDoc  where documentid between 1510526 and 1525131 order by DocumentID;
+select * from DP_APP_SeqBackup  where documentid between 1510526 and 1525131 order by DocumentID,Sequence,ApprovalTag;
+select * from DP_APP_SeqLater  where documentid between 1510526 and 1525131 order by DocumentID,Sequence,ApprovalTag;
+select * from DP_APP_ShortReply  where documentid between 1510526 and 1525131 order by shortreplyid,DocumentID;
+
+select count(*) from DP_APP_Doc where documentid between 1510526 and 1525131 order by CompanyId,DocumentID;
+select count(*) from dp_app_cirdoc where documentid between 1510526 and 1525131 order by CirculationDocumentID;
+select count(*) from DP_APP_CirBaseDoc where documentid between 1510526 and 1525131 order by DocumentID;
+select count(*) from DP_APP_CirAttachFile where documentid between 1510526 and 1525131 order by DocumentID;
+select count(*) from DP_APP_CircUser where documentid between 1510526 and 1525131 order by DocumentID;
+select count(*) from DP_APP_ForwardDoc where documentid between 1510526 and 1525131 order by DocumentID;
+select count(*) from DP_APP_ForwardUser where documentid between 1510526 and 1525131 order by DocumentID;
+select count(*) from DP_APP_CarbonCopyUser where documentid between 1510526 and 1525131 order by DocumentID;
+select count(*) from DP_APP_CarbonCopyUserGroup where documentid between 1510526 and 1525131 order by DocumentID;
+select count(*) from DP_APP_CounterPartUser where documentid between 1510526 and 1525131 order by DocumentID, UserID, DeptID, Sequence;
+select count(*) from DP_APP_CounterPartUserModify  where documentid between 1510526 and 1525131 order by DocumentID;
+select count(*) from DP_APP_Attach  where documentid between 1510526 and 1525131 order by DocumentID;
+select count(*) from DP_APP_BaseDoc  where documentid between 1510526 and 1525131 order by DocumentID;
+select count(*) from DP_APP_SeqBackup  where documentid between 1510526 and 1525131 order by DocumentID,Sequence,ApprovalTag;
+select count(*) from DP_APP_SeqLater  where documentid between 1510526 and 1525131 order by DocumentID,Sequence,ApprovalTag;
+select count(*) from DP_APP_ShortReply  where documentid between 1510526 and 1525131 order by shortreplyid,DocumentID;
 
 -- =====================================
 -- =======  doc_detail insert ==========
