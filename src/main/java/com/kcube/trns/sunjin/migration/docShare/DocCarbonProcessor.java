@@ -2,7 +2,7 @@ package com.kcube.trns.sunjin.migration.docShare;
 
 import com.kcube.trns.sunjin.cache.MigrationCache;
 import com.kcube.trns.sunjin.cache.apitem.DocItemKeyCache;
-import com.kcube.trns.sunjin.cache.folder.FolderInfo;
+import com.kcube.trns.sunjin.cache.folder.DeptCodeInfo;
 import com.kcube.trns.sunjin.cache.user.UserInfo;
 import com.kcube.trns.sunjin.common.UserXid;
 import lombok.RequiredArgsConstructor;
@@ -35,12 +35,14 @@ public class DocCarbonProcessor implements ItemProcessor<DocShareRow, MapSqlPara
     public MapSqlParameterSource process(DocShareRow item) throws Exception {
 
         UserInfo user = cache.getUserInfoByTrnsKey(String.valueOf(item.userId()));
-        FolderInfo folder = cache.getFolderCacheByTrnsKey(String.valueOf(item.deptid()));
+//        FolderInfo folder = cache.getFolderCacheByTrnsKey(String.valueOf(item.deptid()));
+        DeptCodeInfo deptCodeInfo = cache.getDeptCode(item.deptCodeId());
 
-        long groupId = makeGroupId(item, user, folder);
-        String groupName = makeGroupName(item, user, folder);
 
-        if(item.documentId() % 1000 == 0){
+        long groupId = makeGroupId(item, user, deptCodeInfo);
+        String groupName = makeGroupName(item, user, deptCodeInfo);
+
+        if(item.documentId() % 100 == 0){
             log.info(">>>>>>>>>>>>>>>>> item.documentid : {} ",item.documentId());
         }
 
@@ -63,30 +65,31 @@ public class DocCarbonProcessor implements ItemProcessor<DocShareRow, MapSqlPara
         return param;
     }
 
-    private long makeGroupId(DocShareRow item, UserInfo user, FolderInfo folder) {
+    private long makeGroupId(DocShareRow item, UserInfo user, DeptCodeInfo deptCodeInfo) {
         if (isMember(item)) {
             return user != null && user.userId() != null
                     ? userXid.makeUserXid(user.userId())
                     : userXid.makeUserXid(defaultUserId);
         }
 
-        Long folderKmId = (folder != null && folder.kmId() != null)
-                ? folder.kmId()
+        Long folderKmId = (deptCodeInfo != null && deptCodeInfo.kmId() != null)
+                ? deptCodeInfo.kmId()
                 : defaultKmid;
         return item.isSubTree() == 0
                 ? userXid.getExactDprtXid(folderKmId)
                 : userXid.getBelowDprtXid(folderKmId);
     }
 
-    private String makeGroupName(DocShareRow item, UserInfo user, FolderInfo folder) {
+    private String makeGroupName(DocShareRow item, UserInfo user, DeptCodeInfo deptCodeInfo) {
         if (isMember(item)) {
             return (user != null && user.userDisp() != null)
                     ? user.userDisp()
                     : item.nameBase();
         }
 
-        FolderInfo defaultFolder = cache.getFolderCache(defaultKmid);
-        return (folder != null && folder.name() != null) ? folder.name() : defaultFolder.name();
+//        FolderInfo defaultFolder = cache.getFolderCache(defaultKmid);
+//        return (folder != null && folder.name() != null) ? folder.name() : defaultFolder.name();
+        return (deptCodeInfo != null && deptCodeInfo.name() != null) ? deptCodeInfo.name() : "선진";
     }
 
     private boolean isMember(DocShareRow item){

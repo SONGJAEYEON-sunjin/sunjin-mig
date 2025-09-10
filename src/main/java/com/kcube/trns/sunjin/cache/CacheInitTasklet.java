@@ -4,8 +4,8 @@ import com.kcube.trns.sunjin.cache.docdetail.DocDetail;
 import com.kcube.trns.sunjin.cache.docdetail.DocDetailRowMapper;
 import com.kcube.trns.sunjin.cache.folder.DeptCodeInfo;
 import com.kcube.trns.sunjin.cache.folder.DeptCodeRowMapper;
-import com.kcube.trns.sunjin.cache.folder.FolderInfo;
-import com.kcube.trns.sunjin.cache.folder.FolderRowMapper;
+import com.kcube.trns.sunjin.cache.form.FormMappingInfo;
+import com.kcube.trns.sunjin.cache.form.FormMappingInfoMapper;
 import com.kcube.trns.sunjin.cache.orguser.OrgUserInfo;
 import com.kcube.trns.sunjin.cache.orguser.OrgUserInfoRowMapper;
 import com.kcube.trns.sunjin.cache.user.UserInfo;
@@ -37,32 +37,40 @@ public class CacheInitTasklet implements Tasklet {
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 
-        // folerCache 초기화
-        String folerQuery = "SELECT kmid, name, trns_src, trns_key FROM km WHERE tenantId = ? ORDER BY kmid";
-        List<FolderInfo> folderInfoList = jdbcTemplate.query(folerQuery, new FolderRowMapper(), tenantId);
-
-        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> folerCache.size : {} ",folderInfoList.size());
-
-        for(FolderInfo folderInfo : folderInfoList){
-            if (folderInfo.kmId() == null) {
-                log.error("⚠️ FolderInfo with null kmId: {}", folderInfo);
-                continue;
-            }
-            cache.putFolderCache(folderInfo.kmId(), folderInfo);
-        }
+//        // folerCache 초기화
+//        String folerQuery = "SELECT kmid, name, trns_src, trns_key FROM km WHERE tenantId = ? ORDER BY kmid";
+//        List<FolderInfo> folderInfoList = jdbcTemplate.query(folerQuery, new FolderRowMapper(), tenantId);
+//
+//        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> folerCache.size : {} ",folderInfoList.size());
+//
+//        for(FolderInfo folderInfo : folderInfoList){
+//            if (folderInfo.kmId() == null) {
+//                log.error("⚠️ FolderInfo with null kmId: {}", folderInfo);
+//                continue;
+//            }
+//            cache.putFolderCache(folderInfo.kmId(), folderInfo);
+//        }
 
         // deptCodeCache 초기화
-        String deptCodeQuery = """
-            select deptcodeid, deptid, k.kmid, k.name
-            from dp_com_deptcode dc
-            left join km k on dc.DeptID = k.trns_key
-            where k.tenantid = ? and trns_src is not null
+        String deptCodeQuery =  """
+            select
+                c.DeptCodeID,
+                c.deptid,
+                case when k.kmid is null
+                then 27232 else k.kmid
+                end as kmid ,
+                case when k.name is null
+                then c.deptbase else k.name
+                end as name
+            from dp_com_deptcode c
+            left outer join km k
+            on c.deptid = k.trns_key
+            and k.trns_src = 'sync.trns_src.dprt_1090'
         """;
 
         List<DeptCodeInfo> deptCodeList = jdbcTemplate.query(
                 deptCodeQuery,
-                new DeptCodeRowMapper(),
-                tenantId // @Value에서 가져온 tenantId 사용
+                new DeptCodeRowMapper()
         );
 
         for (DeptCodeInfo deptCodeInfo : deptCodeList) {
@@ -70,6 +78,24 @@ public class CacheInitTasklet implements Tasklet {
         }
 
         log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> deptCodeCache.size : {} ", deptCodeList.size());
+
+
+
+        // formMappingCache 초기화
+        String formMappingQuery = """
+            select asis_formid, tobe_formid, tobe_form_name from form_mapping
+        """;
+
+        List<FormMappingInfo> formMappingInfoList = jdbcTemplate.query(
+                formMappingQuery,
+                new FormMappingInfoMapper()
+        );
+
+        for (FormMappingInfo formMappingInfo : formMappingInfoList) {
+            cache.putFormMappingCache(formMappingInfo.asisFormId(), formMappingInfo);
+        }
+
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> formMappingInfoList.size : {} ", formMappingInfoList.size());
 
 
         // userCache 초기화

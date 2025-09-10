@@ -2,6 +2,8 @@ package com.kcube.trns.sunjin.migration.doc;
 
 import com.kcube.trns.sunjin.cache.MigrationCache;
 import com.kcube.trns.sunjin.cache.docdetail.DocDetail;
+import com.kcube.trns.sunjin.cache.folder.DeptCodeInfo;
+import com.kcube.trns.sunjin.cache.form.FormMappingInfo;
 import com.kcube.trns.sunjin.cache.user.UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +47,7 @@ public class DocProcessor implements ItemProcessor<DocRow, MapSqlParameterSource
 
         DocDetail docDetail = cache.getDocDetail(item.documentId());
 
-        if(item.documentId() % 1000 == 0){
+        if(item.documentId() % 100 == 0){
             log.info(">>>>>>>>>>>>>>>>> item.documentid : {} ",item.documentId());
         }
 
@@ -60,13 +62,15 @@ public class DocProcessor implements ItemProcessor<DocRow, MapSqlParameterSource
             params.addValue("ORGID", null);
         }
 
-        if(item.formId() == 116){
-            params.addValue("FORMID",formId_B );
-            params.addValue("FORM_NAME", "{\"ko\":\"이관양식(회계전표) \",\"en\":\"\",\"zh\":\"\",\"ja\":\"\"}");
-        }else{
-            params.addValue("FORMID",formId_A);
-            params.addValue("FORM_NAME", "{\"ko\":\"이관양식\",\"en\":\"\",\"zh\":\"\",\"ja\":\"\"}");
-        }
+        FormMappingInfo formMappingInfo = cache.getFormMappingCache(item.formId());
+//        if(formMappingInfo != null){
+            params.addValue("FORMID", formMappingInfo.tobeFormId() );
+            params.addValue("FORM_NAME", formMappingInfo.tobeFormName());
+//        }else{
+//            log.info(">>>>>>>>>>>>>>>>> not mapping form item.documentid : {}",item.documentId());
+//            params.addValue("FORMID",formId_A);
+//            params.addValue("FORM_NAME", "{\"ko\":\"이관양식\",\"en\":\"\",\"zh\":\"\",\"ja\":\"\"}");
+//        }
 
         params.addValue("GRPID", cache.getGrpIdCacheByTrnsKey(item.accessTitleId()));
 
@@ -83,19 +87,27 @@ public class DocProcessor implements ItemProcessor<DocRow, MapSqlParameterSource
                     params.addValue("USER_NAME", item.nameBase());
                     params.addValue("USER_DISP", item.nameBase());
                 }
-
                 params.addValue("DPRTID", defaultKmid);
-                params.addValue("DPRT_NAME", "선진");
-                params.addValue("CTGR_DPRTID", defaultKmid);
-                params.addValue("CTGR_DPRT_NAME", "선진");
+//                params.addValue("DPRT_NAME", "선진");
         }else{
             params.addValue("USERID", user.userId());
             params.addValue("USER_NAME", user.name());
             params.addValue("USER_DISP", user.userDisp());
             params.addValue("DPRTID", user.dprtId());
-            params.addValue("DPRT_NAME", user.dprtName());
-            params.addValue("CTGR_DPRTID", user.dprtId());
-            params.addValue("CTGR_DPRT_NAME", user.dprtName());
+//            params.addValue("DPRT_NAME", user.dprtName());
+        }
+
+        DeptCodeInfo deptCodeInfo = cache.getDeptCode(item.deptCodeId());
+        if(deptCodeInfo == null || deptCodeInfo.deptId() == null){
+            params.addValue("DPRTID", defaultKmid);
+            params.addValue("DPRT_NAME", "선진");
+            params.addValue("CTGR_DPRTID", defaultKmid);
+            params.addValue("CTGR_DPRT_NAME", "선진");
+        }else{
+            params.addValue("DPRTID", deptCodeInfo.kmId());
+            params.addValue("DPRT_NAME", deptCodeInfo.name());
+            params.addValue("CTGR_DPRTID", deptCodeInfo.kmId());
+            params.addValue("CTGR_DPRT_NAME", deptCodeInfo.name());
         }
 
         params.addValue("RGST_DATE", item.writeTime());
@@ -145,4 +157,6 @@ public class DocProcessor implements ItemProcessor<DocRow, MapSqlParameterSource
         return params;
     }
 }
+
+
 
