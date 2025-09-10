@@ -66,7 +66,7 @@ public class DocOpnProcessor implements ItemProcessor<DocOpnRow, MapSqlParameter
         Long itemId = itemKeyCache.getItemIdCacheByTrnsKey(String.valueOf(item.documentId()));
         param.addValue("ITEMID", itemId == null ? item.documentId() : itemId);
 
-        if(item.documentId() % 10000 == 0){
+        if(item.documentId() % 10 == 0){
             log.info(">>>>>>>>>>>>>>>>> item.documentid : {} ",item.documentId());
         }
 

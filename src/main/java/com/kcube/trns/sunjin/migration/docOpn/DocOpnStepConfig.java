@@ -8,6 +8,7 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,13 +38,88 @@ public class DocOpnStepConfig {
     @Bean
     public Step docOpnStep(JobRepository jobRepository,
                            PlatformTransactionManager transactionManager,
-                           JdbcPagingItemReader<DocOpnRow> docOpnReader,
+                           @Qualifier("docOpnPagingReader") JdbcPagingItemReader<DocOpnRow> docOpnReader,
                            DocOpnProcessor docOpnProcessor,
                            JdbcBatchItemWriter<MapSqlParameterSource> docOpnBatchWriter) {
 
         return new StepBuilder("docOpnStep", jobRepository)
                 .<DocOpnRow, MapSqlParameterSource>chunk(3000, transactionManager)
                 .reader(docOpnReader)
+                .processor(docOpnProcessor)
+                .writer(docOpnBatchWriter)
+                .build();
+    }
+
+    @Bean
+    public Step docOpnStepFirst(JobRepository jobRepository,
+                           PlatformTransactionManager transactionManager,
+                           JdbcPagingItemReader<DocOpnRow> DocOpnReaderFirst,
+                           DocOpnProcessor docOpnProcessor,
+                           JdbcBatchItemWriter<MapSqlParameterSource> docOpnBatchWriter) {
+
+        return new StepBuilder("docOpnStepFirst", jobRepository)
+                .<DocOpnRow, MapSqlParameterSource>chunk(200, transactionManager)
+                .reader(DocOpnReaderFirst)
+                .processor(docOpnProcessor)
+                .writer(docOpnBatchWriter)
+                .build();
+    }
+
+    @Bean
+    public Step docOpnStepSecond(JobRepository jobRepository,
+                                PlatformTransactionManager transactionManager,
+                                JdbcPagingItemReader<DocOpnRow> DocOpnReaderSecond,
+                                DocOpnProcessor docOpnProcessor,
+                                JdbcBatchItemWriter<MapSqlParameterSource> docOpnBatchWriter) {
+
+        return new StepBuilder("docOpnStepSecond", jobRepository)
+                .<DocOpnRow, MapSqlParameterSource>chunk(200, transactionManager)
+                .reader(DocOpnReaderSecond)
+                .processor(docOpnProcessor)
+                .writer(docOpnBatchWriter)
+                .build();
+    }
+
+    @Bean
+    public Step docOpnStepThird(JobRepository jobRepository,
+                                 PlatformTransactionManager transactionManager,
+                                 JdbcPagingItemReader<DocOpnRow> DocOpnReaderThird,
+                                 DocOpnProcessor docOpnProcessor,
+                                 JdbcBatchItemWriter<MapSqlParameterSource> docOpnBatchWriter) {
+
+        return new StepBuilder("docOpnStepThird", jobRepository)
+                .<DocOpnRow, MapSqlParameterSource>chunk(1000, transactionManager)
+                .reader(DocOpnReaderThird)
+                .processor(docOpnProcessor)
+                .writer(docOpnBatchWriter)
+                .build();
+    }
+
+    @Bean
+    public Step docOpnStepFourth(JobRepository jobRepository,
+                                PlatformTransactionManager transactionManager,
+                                JdbcPagingItemReader<DocOpnRow> DocOpnReaderFourth,
+                                DocOpnProcessor docOpnProcessor,
+                                JdbcBatchItemWriter<MapSqlParameterSource> docOpnBatchWriter) {
+
+        return new StepBuilder("docOpnStepFourth", jobRepository)
+                .<DocOpnRow, MapSqlParameterSource>chunk(200, transactionManager)
+                .reader(DocOpnReaderFourth)
+                .processor(docOpnProcessor)
+                .writer(docOpnBatchWriter)
+                .build();
+    }
+
+    @Bean
+    public Step docOpnStepFifth(JobRepository jobRepository,
+                                 PlatformTransactionManager transactionManager,
+                                 JdbcPagingItemReader<DocOpnRow> DocOpnReaderFifth,
+                                 DocOpnProcessor docOpnProcessor,
+                                 JdbcBatchItemWriter<MapSqlParameterSource> docOpnBatchWriter) {
+
+        return new StepBuilder("docOpnStepFifth", jobRepository)
+                .<DocOpnRow, MapSqlParameterSource>chunk(1000, transactionManager)
+                .reader(DocOpnReaderFifth)
                 .processor(docOpnProcessor)
                 .writer(docOpnBatchWriter)
                 .build();

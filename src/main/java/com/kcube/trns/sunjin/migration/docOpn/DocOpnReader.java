@@ -21,6 +21,81 @@ public class DocOpnReader {
 
     private final DataSource dataSource;
 
+//    private static final String SHORT_REPLY_UNION_SUBQUERY = """
+//            select rp.Documentid , rp.section, rp.content, rp.userid, rp.NameBase, rp.writetime, rp.ShortReplyID
+//            from DP_APP_ShortReply rp join (select documentid as documentid
+//                                            from dp_app_doc
+//                                            where ApprovalState ='C'
+//                                            and left(AccountTag, '2') = 'ZP') d
+//            on rp.documentid = d.documentid
+//            union all
+//            select rp.Documentid, rp.section, rp.content, rp.userid, rp.NameBase, rp.writetime, rp.ShortReplyID
+//            from DP_APP_ShortReply rp join (select documentid as documentid
+//                                            from dp_app_doc
+//                                            where ApprovalState ='C'
+//                                            and parentdocumentid = 0
+//                                            and left(AccountTag, '2') = 'ZD') d
+//            on rp.documentid = d.documentid
+//            union all
+//            select d.childDocumentid, rp.section, rp.content, rp.userid, rp.NameBase, rp.writetime, rp.ShortReplyID
+//            from DP_APP_ShortReply rp join (select a.documentid, b.documentid as childDocumentid
+//                                            from dp_app_doc a join dp_app_doc b
+//                                            on a.documentid = b.parentDocumentid
+//                                            where a.ApprovalState ='C'
+//                                            and left(a.AccountTag, '2') = 'ZD') d
+//            on rp.documentid = d.documentid
+//            union all
+//            select rp.Documentid, rp.section, rp.content, rp.userid, rp.NameBase, rp.writetime, rp.ShortReplyID
+//            from DP_APP_ShortReply rp join (select documentid as documentid
+//                                            from dp_app_doc
+//                                            where ApprovalState ='C'
+//                                            and parentdocumentid <> 0
+//                                            and left(AccountTag, '2') = 'ZQ') d
+//            on rp.documentid = d.documentid
+//            union all
+//            select d.parentDocumentid, rp.section, rp.content, rp.userid, rp.NameBase, rp.writetime, rp.ShortReplyID
+//            from DP_APP_ShortReply rp join (select documentid as documentid,ParentDocumentID as parentDocumentid
+//                                            from dp_app_doc
+//                                            where ApprovalState ='C'
+//                                            and parentdocumentid <> 0
+//                                            and left(AccountTag, '2') = 'ZQ') d
+//            on rp.documentid = d.documentid
+//        """;
+//
+//    @Bean("docOpnPagingReader")
+//    public JdbcPagingItemReader<DocOpnRow> docOpnReader() {
+//        MySqlPagingQueryProvider provider = new MySqlPagingQueryProvider();
+//
+//        provider.setSelectClause("""
+//            SELECT Documentid, section, content, userid, NameBase, writetime, ShortReplyID
+//        """);
+//        provider.setFromClause("FROM ( " + SHORT_REPLY_UNION_SUBQUERY + " ) sr");
+//
+//        provider.setWhereClause("");
+//
+//        Map<String, Order> sort = new HashMap<>();
+//        sort.put("Documentid", Order.ASCENDING);
+//        sort.put("ShortReplyID", Order.ASCENDING);
+//        provider.setSortKeys(sort);
+//
+//        return new JdbcPagingItemReaderBuilder<DocOpnRow>()
+//                .name("docOpnReader")
+//                .dataSource(dataSource)
+//                .queryProvider(provider)
+//                .pageSize(3000)
+//                .rowMapper((rs, rowNum) -> new DocOpnRow(
+//                        rs.getLong("documentid"),
+//                        rs.getInt("section"),
+//                        rs.getString("content"),
+//                        rs.getLong("userid"),
+//                        rs.getString("namebase"),
+//                        toLocalDateTimeSafe(rs.getTimestamp("writetime")),
+//                        rs.getLong("ShortReplyID")
+//                ))
+//                .build();
+//    }
+
+
     @Bean("docOpnPagingReader")
     public JdbcPagingItemReader<DocOpnRow> docOpnReader() {
         MySqlPagingQueryProvider provider = new MySqlPagingQueryProvider();
