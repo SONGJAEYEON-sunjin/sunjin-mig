@@ -2,7 +2,7 @@ package com.kcube.trns.sunjin.cache;
 
 import com.kcube.trns.sunjin.cache.docdetail.DocDetail;
 import com.kcube.trns.sunjin.cache.folder.DeptCodeInfo;
-import com.kcube.trns.sunjin.cache.folder.FolderInfo;
+import com.kcube.trns.sunjin.cache.form.FormMappingInfo;
 import com.kcube.trns.sunjin.cache.orguser.OrgUserInfo;
 import com.kcube.trns.sunjin.cache.user.UserInfo;
 import org.springframework.stereotype.Component;
@@ -12,26 +12,26 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class MigrationCache {
-
-    // folder cache
-    private final Map<Long, FolderInfo>  folderCacheByKmId = new ConcurrentHashMap<Long,FolderInfo>();
-    private final Map<String,FolderInfo>  folderCacheByTrnsKey = new ConcurrentHashMap<String,FolderInfo>();
-
-
-    public void putFolderCache(long kmId, FolderInfo folderInfo) {
-        folderCacheByKmId.put(kmId, folderInfo);
-        if(folderInfo.trnsKey() != null){
-            folderCacheByTrnsKey.put(folderInfo.trnsKey(), folderInfo);
-        }
-    }
-
-    public FolderInfo getFolderCache(long kmId) {
-        return folderCacheByKmId.get(kmId);
-    }
-
-    public FolderInfo getFolderCacheByTrnsKey(String key) {
-        return folderCacheByTrnsKey.get(key);
-    }
+//
+//    // folder cache - 삭제해야할지도,,?
+//    private final Map<Long, FolderInfo>  folderCacheByKmId = new ConcurrentHashMap<Long,FolderInfo>();
+//    private final Map<String,FolderInfo>  folderCacheByTrnsKey = new ConcurrentHashMap<String,FolderInfo>();
+//
+//
+//    public void putFolderCache(long kmId, FolderInfo folderInfo) {
+//        folderCacheByKmId.put(kmId, folderInfo);
+//        if(folderInfo.trnsKey() != null){
+//            folderCacheByTrnsKey.put(folderInfo.trnsKey(), folderInfo);
+//        }
+//    }
+//
+//    public FolderInfo getFolderCache(long kmId) {
+//        return folderCacheByKmId.get(kmId);
+//    }
+//
+//    public FolderInfo getFolderCacheByTrnsKey(String key) {
+//        return folderCacheByTrnsKey.get(key);
+//    }
 
     // deptcode cache
     private final Map<Long, DeptCodeInfo> deptCodeCache = new ConcurrentHashMap<>();
@@ -40,9 +40,21 @@ public class MigrationCache {
         deptCodeCache.put(deptCodeId, info);
     }
 
-    // 이걸로 갖고와서 set 해주면 되겠다,,,
+    // 이걸로 갖고와서 processor 에서 set 해주면 되겠다,,,
     public DeptCodeInfo getDeptCode(Long deptCodeId) {
         return deptCodeCache.get(deptCodeId);
+    }
+
+    // formMapping cache
+    private final Map<Long, FormMappingInfo> formMappingCache = new ConcurrentHashMap<>();
+
+    public void putFormMappingCache(Long asisFormId, FormMappingInfo info) {
+        formMappingCache.put(asisFormId, info);
+    }
+
+    // 이걸로 갖고와서 set 해주면 되겠다,,,
+    public FormMappingInfo getFormMappingCache(Long asisFormId) {
+        return formMappingCache.get(asisFormId);
     }
 
     // user cache
@@ -96,4 +108,6 @@ public class MigrationCache {
     public OrgUserInfo getOrgUserCache(long userId) {
         return orgUserCacheByUserId.get(userId);
     }
+
+
 }
