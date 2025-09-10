@@ -31,12 +31,14 @@ migration:
   tenant-id : 1090 # 운영 tenantid
   default-userid : 20954 # 퇴사자 USERID
   default-kmid : 27232 # 디폴트 부서 KMID
-  asis-min-documentid: 1510526  # select min(documentid) from dp_app_doc WHERE WRITETIMEYMD <'20250101';
-  asis-max-documentid: 1530000 # select max(documentid)+1 from dp_app_doc WHERE WRITETIMEYMD <'20250101';
+  asis-min-documentid: 1525132  # select min(documentid) from dp_app_doc WHERE WRITETIMEYMD <'20250101';
+  asis-max-documentid: 1539524 # select max(documentid)+1 from dp_app_doc WHERE WRITETIMEYMD <'20250101';
   form-id-A: 10 # 이관용 양식ID
   form-id-B: 11 # 이관용 양식ID 회계전표
   ctgrId : 2 # 부서문서함 category id
-  tobe-min-itemid: 1150194 # select min(itemid) from ap_item ; -- 해당 이관범위조건 추가
-  tobe-max-itemid: 1170000 # select max(itemid) from ap_item ; -- 해당 이관범위조건 추가
+  tobe-min-itemid: 1153743
+  tobe-max-itemid: 1200000
+
+
 
 
